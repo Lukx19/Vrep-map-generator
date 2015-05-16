@@ -1,7 +1,11 @@
 package mff.mapGenereator;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+import static java.util.Collections.sort;
 
 /**
  * Created by lukas on 5/15/15.
@@ -85,6 +89,26 @@ public class Field {
         neighbours[1]=map.getField(posX+1,posY-1).getTopOwner();
         neighbours[2]=map.getField(posX+1,posY+1).getTopOwner();
         neighbours[3]=map.getField(posX-1,posY+1).getTopOwner();
+    }
+
+    public int getLowerLevel(int level) {
+        int lower=Integer.MIN_VALUE;
+        for (Room room : owners) {
+            if(room.getLevel()>lower && room.getLevel() <level){
+                lower = room.getLevel();
+            }
+        }
+        return lower;
+    }
+
+    public int getHigherLevel(int level){
+        int higher=Integer.MAX_VALUE;
+        for (Room room : owners) {
+            if(room.getLevel()<higher && room.getLevel() > level){
+                higher = room.getLevel();
+            }
+        }
+        return higher;
     }
 
 

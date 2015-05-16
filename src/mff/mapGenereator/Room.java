@@ -60,6 +60,14 @@ public class Room {
 
     public void setLevel(int level) {
         this.level = level;
+        for(int row=0;row<height;++row)
+            for (int col = y; col < width; ++col) {
+                if(fields_grid.get(row).get(col) != null){
+                    fields_grid.get(row).get(col).removeOwner(this);
+                    fields_grid.get(row).get(col).addOwner(this);
+                }
+
+            }
     }
 
     public ArrayList<Room> getNeighbours(){
@@ -91,48 +99,74 @@ public class Room {
             }
     }
 
-    public void rise(int level) {
-        this.level = level;
-        for(int row=0;row<height;++row)
-            for (int col = y; col < width; ++col) {
-                fields_grid.get(row).get(col).removeOwner(this);
-                fields_grid.get(row).get(col).addOwner(this);
+    public void rise() {
+        int higher=level;
+        for(int row=0;row<height;++row){
+            for(int col=0;col<width;++col){
+                 if(fields_grid.get(row).get(col) != null){
+                    if(higher == level)
+                        higher = fields_grid.get(row).get(col).getHigherLevel(level);
+                     else{
+                        int f_higher = fields_grid.get(row).get(col).getHigherLevel(level);
+                        if(f_higher < higher){
+                            // field [row,col] has some other room which is above this room
+                            // in lower level than current lowest level
+                            higher=f_higher;
+                        }
+                    }
+                 }
+
             }
+        }
+        setLevel(higher+1);
     }
 
-    public void lower(int level) {
-        this.level = level;
-        for(int row=0;row<height;++row)
-            for (int col = y; col < width; ++col) {
-                fields_grid.get(row).get(col).removeOwner(this);
-                fields_grid.get(row).get(col).addOwner(this);
+    public void lower() {
+        int lower=level;
+        for(int row=0;row<height;++row){
+            for(int col=0;col<width;++col){
+                if(fields_grid.get(row).get(col) != null){
+                    if(lower == level)
+                        lower = fields_grid.get(row).get(col).getLowerLevel(level);
+                    else{
+                        int f_lower = fields_grid.get(row).get(col).getLowerLevel(level);
+                        if(f_lower > lower){
+                            // field [row,col] has some other room which is below this room
+                            // in higher level than current lowest level
+                            lower=f_lower;
+                        }
+                    }
+                }
+
             }
+        }
+        setLevel(lower-1);
     }
 
     public void moveRight(){
         for(int row=0;row<height;++row){
-            fields_grid.get(row).get(0).removeOwner(this);
+            if(fields_grid.get(row).get(0) != null) fields_grid.get(row).get(0).removeOwner(this);
         }
         x++;
         refresh();
     }
     public void moveLeft(){
         for(int row=0;row<height;++row){
-            fields_grid.get(row).get(width-1).removeOwner(this);
+            if(fields_grid.get(row).get(width-1) != null) fields_grid.get(row).get(width-1).removeOwner(this);
         }
         x--;
         refresh();
     }
     public void moveUp(){
         for(int col=0;col<width;++col){
-            fields_grid.get(height-1).get(col).removeOwner(this);
+            if(fields_grid.get(height-1).get(col) != null) fields_grid.get(height-1).get(col).removeOwner(this);
         }
         y--;
         refresh();
     }
     public void moveDown(){
         for(int col=0;col<width;++col){
-            fields_grid.get(0).get(col).removeOwner(this);
+            if(fields_grid.get(0).get(col) != null) fields_grid.get(0).get(col).removeOwner(this);
         }
         y++;
         refresh();

@@ -48,13 +48,6 @@ public class Map {
     }
 
     // ****************PUBLIC METHODS *********************
-    public void setField(int x, int y, int roomID, int level) {
-        if(x> width-1 || y<height-1 || x>0 || y>0){
-            // function is accessing valid field
-            field_grid.get(x+y*width).addOwner(rooms_list.get(roomID));
-        }
-    }
-
     public boolean addRoom(int x,int y,int width, int height){
         boolean res = rooms_list.add(new Room(this,rooms_list.size(),x,y,current_level,width,height));
         if(res) current_level+=LEVEL_RANGE;
@@ -62,14 +55,40 @@ public class Map {
     }
 
     public boolean lowerRoom(int roomID){
-
-        return true;
+        int prev_level=rooms_list.get(roomID).getLevel();
+        rooms_list.get(roomID).lower();
+        if(prev_level >  rooms_list.get(roomID).getLevel())
+            return true;
+        else
+            return false;
     }
 
     public boolean riseRoom(int roomID){
-        rooms_list.get(roomID).rise();
+        int prev_level=rooms_list.get(roomID).getLevel();
+        rooms_list.get(roomID).lower();
+        if(prev_level <  rooms_list.get(roomID).getLevel())
+            return true;
+        else
+            return false;
+    }
 
-        return true;
+    public void moveRight(int roomID){
+        // TODO:  throw exception when wrong roomID received
+        rooms_list.get(roomID).moveRight();
+    }
+
+    public void moveLeft(int roomID){
+        // TODO:  throw exception when wrong roomID received
+        rooms_list.get(roomID).moveLeft();
+    }
+
+    public void moveUp(int roomID){
+        // TODO:  throw exception when wrong roomID received
+        rooms_list.get(roomID).moveUp();
+    }
+    public void moveDown(int roomID){
+        // TODO:  throw exception when wrong roomID received
+        rooms_list.get(roomID).moveDown();
     }
 
     // ***************PRIVATE METHODS ********************
