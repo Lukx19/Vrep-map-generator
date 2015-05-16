@@ -1,5 +1,8 @@
 package mff.mapGenereator;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 /**
  * Created by lukas on 5/15/15.
  */
@@ -9,72 +12,66 @@ public class Field {
     private State state;
     private int posX;
     private int posY;
-    private int level;
-    private int owners_count;
-    private Room[] owners; // 0 - northWest 1 -northEast 2-SouthEast 3- southWest
+    private int unique_neighbours;
+    private Room[] neighbours;
+    private PriorityQueue<Room> owners; // 0 - northWest 1 -northEast 2-SouthEast 3- southWest
+
     public Field(Map m,int x,int y,int level) {
         this.map=m;
         posX=x;
         posY=y;
-        this.level=level;
-        owners = new Room[4];
+        //this.level=level;
+        neighbours = new Room[4];
         state=State.EMPTY;
-        owners_count=0;
+        unique_neighbours=0;
+        owners = new PriorityQueue<Room>(4, new Comparator<Room>() {
+            @Override
+            public int compare(Room r1, Room r2) {
+                return (r1.getLevel() < r2.getLevel())?-1:1;
+            }
+        });
+
     }
 
-//    public void setField(Room owner, int level) {
-//        this.owners.add(owner);
-//        this.level=level;
-//    }
     public int getOwnerCount(){
-        return owners_count;
+        return owners.size();
     }
-    public  Room[] getOwners(){
-        return owners;
+    public  Room getTopOwner(){
+        return owners.peek();
     }
 
     public void addOwner(Room owner){
         if(owner != null){
-            ++owners_count;
-            if(map.getField(posX-1,posY-1).getOwners()[2] == owner){
-                owners[0]=owner;
-            }
-            if(map.getField(posX+1,posY-1).getOwners()[3] == owner){
-                owners[1]=owner;
-            }
-            if(map.getField(posX+1,posY+1).getOwners()[0] == owner){
-                owners[2]=owner;
-            }
-            if(map.getField(posX-1,posY-1).getOwners()[1] == owner){
-                owners[3]=owner;
-            }
-
-
+            owners.add(owner);
         }
-
     }
-   public int getX(){
+
+    public void removeOwner(Room room) {
+        owners.remove(room);
+    }
+
+    public int getX(){
         return posX;
     }
     public int getY(){
         return posY;
     }
 
-    public int getLevel(){
-        return level;
-    }
-    public void setLevel(int level){
-        this.level=level;
-    }
+//    public int getLevel(){
+//        return level;
+//    }
+//    public void setLevel(int level){
+//        this.level=level;
+//    }
     public State getState(){
         return state;
     }
 
     public void calcState(){
-        if(owners_count == 1){
+        if(unique_neighbours == 1){
             // this field is inside of the room
             state=State.IN_ROOM;
-        }else if(owners_count > 1){
+        }else if(unique_neighbours > 1){
             // this field has multiple owners -> this field is at the boundary of rooms
             state= State.WALL;
         }else{
@@ -83,9 +80,12 @@ public class Field {
         }
     }
 
-//    public void refresh(){
-//        owners[0]=
-//    }
+    public void refresh(){
+        neighbours[0]=map.getField(posX-1,posY-1).getTopOwner();
+        neighbours[1]=map.getField(posX+1,posY-1).getTopOwner();
+        neighbours[2]=map.getField(posX+1,posY+1).getTopOwner();
+        neighbours[3]=map.getField(posX-1,posY+1).getTopOwner();
+    }
 
 
 }
