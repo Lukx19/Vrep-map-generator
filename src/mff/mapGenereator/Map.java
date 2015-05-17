@@ -2,12 +2,10 @@ package mff.mapGenereator;
 
 import java.util.ArrayList;
 
-/**
- * Created by lukas on 5/15/15.
- */
+
 public class Map {
     private ArrayList<Room> rooms_list;
-    private ArrayList<Field> field_grid;
+    private ArrayList<ArrayList<Field>> field_grid;
     private int current_level = 0;
     private int LEVEL_RANGE = 1000;
     private int width;
@@ -27,6 +25,7 @@ public class Map {
         init(width,height);
     }
     // ******************** GETTERS & SETTERS *************
+    //TODO: add refresh of rooms and fields when width or height change
     public int getWidth() {
         return width;
     }
@@ -44,7 +43,10 @@ public class Map {
     }
 
     public Field getField(int x,int y){
-        return field_grid.get(x+y*width);
+        if(x>=width || x<0 || y>=height || y<0)
+            return null;
+        else
+            return field_grid.get(y).get(x);
     }
 
     // ****************PUBLIC METHODS *********************
@@ -57,19 +59,13 @@ public class Map {
     public boolean lowerRoom(int roomID){
         int prev_level=rooms_list.get(roomID).getLevel();
         rooms_list.get(roomID).lower();
-        if(prev_level >  rooms_list.get(roomID).getLevel())
-            return true;
-        else
-            return false;
+        return prev_level > rooms_list.get(roomID).getLevel();
     }
 
     public boolean riseRoom(int roomID){
         int prev_level=rooms_list.get(roomID).getLevel();
-        rooms_list.get(roomID).lower();
-        if(prev_level <  rooms_list.get(roomID).getLevel())
-            return true;
-        else
-            return false;
+        rooms_list.get(roomID).rise();
+        return prev_level < rooms_list.get(roomID).getLevel();
     }
 
     public void moveRight(int roomID){
@@ -93,12 +89,15 @@ public class Map {
 
     // ***************PRIVATE METHODS ********************
     private void init(int width, int height){
-        rooms_list = new ArrayList();
-        field_grid = new ArrayList();
-        for(int i=0;i<width;++i)
-            for(int j=0; j<height;++j){
-            field_grid.add(new Field(this,i,j,0));
+        rooms_list = new ArrayList<>();
+        field_grid = new ArrayList<>();
+        for(int row=0;row<height;++row){
+            field_grid.add(new ArrayList<>());
+            for(int col=0; col<width;++col){
+                field_grid.get(row).add(new Field(this, col, row, 0));
+            }
         }
+
     }
 
 

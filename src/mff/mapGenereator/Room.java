@@ -2,9 +2,7 @@ package mff.mapGenereator;
 
 import java.util.ArrayList;
 
-/**
- * Created by lukas on 5/15/15.
- */
+
 public class Room {
     private Map map;
     private int roomID;
@@ -78,25 +76,24 @@ public class Room {
        return neighbours.add(r);
     }
     private boolean removeNeighbour(Room r){
-       if(neighbours.remove(r))
-            return true;
-       else
-            return false;
+        return neighbours.remove(r);
     }
 
-    public void refresh(){
+    private void refresh(){
         fields_grid = new ArrayList<>();
-        for(int j=y;j<height;++j)
-            for (int i = x; i < width; ++i) {
-                //map.setField(i,j,roomID,z);
-                Field current_field = map.getField(i,j);
+        for(int row=0;row<height;++row){
+            fields_grid.add(new ArrayList<>());
+            for (int col = 0; col < width; ++col) {
+                Field current_field = map.getField(x+col,y+row);
                 if( current_field!= null){
-                    fields_grid.get(j).add(current_field);
+                    fields_grid.get(row).add(current_field);
                     current_field.addOwner(this);
                 }else{
-                    fields_grid.get(j).add(null);
+                    fields_grid.get(row).add(null);
                 }
             }
+        }
+
     }
 
     public void rise() {
@@ -118,7 +115,8 @@ public class Room {
 
             }
         }
-        setLevel(higher+1);
+        if(higher != level)
+            setLevel(higher+1);
     }
 
     public void lower() {
@@ -140,7 +138,8 @@ public class Room {
 
             }
         }
-        setLevel(lower-1);
+        if(lower != level)
+            setLevel(lower-1);
     }
 
     public void moveRight(){

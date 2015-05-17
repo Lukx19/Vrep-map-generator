@@ -7,9 +7,7 @@ import java.util.PriorityQueue;
 
 import static java.util.Collections.sort;
 
-/**
- * Created by lukas on 5/15/15.
- */
+
 public class Field {
     public enum State{WALL,EMPTY,IN_ROOM,DOOR}
     private Map map;
@@ -28,12 +26,7 @@ public class Field {
         neighbours = new Room[4];
         state=State.EMPTY;
         unique_neighbours=0;
-        owners = new PriorityQueue<Room>(4, new Comparator<Room>() {
-            @Override
-            public int compare(Room r1, Room r2) {
-                return (r1.getLevel() < r2.getLevel())?-1:1;
-            }
-        });
+        owners = new PriorityQueue<>(4, (r1, r2) -> (r1.getLevel() < r2.getLevel())?-1:1);
 
     }
 
@@ -45,7 +38,7 @@ public class Field {
     }
 
     public void addOwner(Room owner){
-        if(owner != null){
+        if(owner != null && !owners.contains(owner)){
             owners.add(owner);
         }
     }
@@ -98,7 +91,10 @@ public class Field {
                 lower = room.getLevel();
             }
         }
-        return lower;
+        if(lower == Integer.MIN_VALUE)
+            return level;
+        else
+            return lower;
     }
 
     public int getHigherLevel(int level){
@@ -108,7 +104,10 @@ public class Field {
                 higher = room.getLevel();
             }
         }
-        return higher;
+        if(higher == Integer.MAX_VALUE)
+            return level;
+        else
+            return higher;
     }
 
 
