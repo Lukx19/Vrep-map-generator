@@ -1,4 +1,4 @@
-package mff.mapGenereator;
+package MapGenerator.RoomFieldStructure;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,6 @@ public class Map {
     private ArrayList<Room> rooms_list;
     private ArrayList<ArrayList<Field>> field_grid;
     private int current_level = 0;
-    private int LEVEL_RANGE = 1000;
     private int width;
     private int height;
 
@@ -49,10 +48,18 @@ public class Map {
             return field_grid.get(y).get(x);
     }
 
+    public Room getRoom(int roomID){
+        return rooms_list.get(roomID);
+    }
+
+    public int getRoomsCount(){
+        return rooms_list.size();
+    }
+
     // ****************PUBLIC METHODS *********************
     public boolean addRoom(int x,int y,int width, int height){
         boolean res = rooms_list.add(new Room(this,rooms_list.size(),x,y,current_level,width,height));
-        if(res) current_level+=LEVEL_RANGE;
+        if(res) current_level++;
         return res;
     }
 
@@ -85,6 +92,11 @@ public class Map {
     public void moveDown(int roomID){
         // TODO:  throw exception when wrong roomID received
         rooms_list.get(roomID).moveDown();
+    }
+
+    public void swapRooms(int Room1, int room2){
+        // TODO throw exception if rooms IDs are wrong
+        rooms_list.get(Room1).swapWith(rooms_list.get(room2));
     }
 
     // ***************PRIVATE METHODS ********************
