@@ -1,4 +1,4 @@
-package mff.mapGenereator;
+package MapGenerator.RoomFieldStructure;
 
 import java.util.ArrayList;
 
@@ -31,6 +31,12 @@ public class Room {
     // ******************** GETTERS & SETTERS *************
    public void setHeight(int height) {
         this.height = height;
+    }
+    public int getHeight(){
+        return height;
+    }
+    public int getWidth(){
+        return width;
     }
     public void setWidth(int width) {
         this.width = width;
@@ -79,6 +85,7 @@ public class Room {
         return neighbours.remove(r);
     }
 
+
     private void refresh(){
         fields_grid = new ArrayList<>();
         for(int row=0;row<height;++row){
@@ -95,51 +102,66 @@ public class Room {
         }
 
     }
-
+    public void swapWith(Room other){
+        int other_level= other.getLevel();
+        other.setLevel(level);
+        setLevel(other_level);
+    }
     public void rise() {
-        int higher=level;
+        int higher_level=level;
+        Room higher_room=null;
+        Room higher_room_loc;
         for(int row=0;row<height;++row){
             for(int col=0;col<width;++col){
                  if(fields_grid.get(row).get(col) != null){
-                    if(higher == level)
-                        higher = fields_grid.get(row).get(col).getHigherLevel(level);
+                    if(higher_level == level){
+                        higher_room = fields_grid.get(row).get(col).getHigherRoom(this);
+                        higher_level = higher_room.getLevel();
+                    }
                      else{
-                        int f_higher = fields_grid.get(row).get(col).getHigherLevel(level);
-                        if(f_higher < higher){
+                        higher_room_loc = fields_grid.get(row).get(col).getHigherRoom(this);
+                        if(higher_room_loc.getLevel() < higher_level && higher_room_loc.getLevel() != level){
                             // field [row,col] has some other room which is above this room
                             // in lower level than current lowest level
-                            higher=f_higher;
+                            higher_level=higher_room_loc.getLevel();
+                            higher_room = higher_room_loc;
                         }
                     }
                  }
 
             }
         }
-        if(higher != level)
-            setLevel(higher+1);
+        if(higher_room != this)
+            swapWith(higher_room);
+
     }
 
     public void lower() {
-        int lower=level;
+        int lower_level=level;
+        Room lower_room = null;
+        Room lower_room_loc;
         for(int row=0;row<height;++row){
             for(int col=0;col<width;++col){
                 if(fields_grid.get(row).get(col) != null){
-                    if(lower == level)
-                        lower = fields_grid.get(row).get(col).getLowerLevel(level);
+                    if(lower_level == level){
+                        lower_room = fields_grid.get(row).get(col).getLowerRoom(this);
+                        lower_level = lower_room.getLevel();
+                    }
                     else{
-                        int f_lower = fields_grid.get(row).get(col).getLowerLevel(level);
-                        if(f_lower > lower){
+                        lower_room_loc = fields_grid.get(row).get(col).getLowerRoom(this);
+                        if( lower_room_loc.getLevel() > lower_level && lower_room_loc.getLevel() != level){
                             // field [row,col] has some other room which is below this room
                             // in higher level than current lowest level
-                            lower=f_lower;
+                            lower_level=lower_room_loc.getLevel();
+                            lower_room=lower_room_loc;
                         }
                     }
                 }
 
             }
         }
-        if(lower != level)
-            setLevel(lower-1);
+        if(lower_room != this)
+            swapWith(lower_room);
     }
 
     public void moveRight(){

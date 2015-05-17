@@ -1,8 +1,5 @@
-package mff.mapGenereator;
+package MapGenerator.RoomFieldStructure;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import static java.util.Collections.sort;
@@ -84,30 +81,34 @@ public class Field {
         neighbours[3]=map.getField(posX-1,posY+1).getTopOwner();
     }
 
-    public int getLowerLevel(int level) {
+    public Room getLowerRoom(Room this_room) {
         int lower=Integer.MIN_VALUE;
+        Room lower_room = null;
         for (Room room : owners) {
-            if(room.getLevel()>lower && room.getLevel() <level){
+            if(room.getLevel()>lower && room.getLevel() < this_room.getLevel()){
                 lower = room.getLevel();
+                lower_room = room;
             }
         }
-        if(lower == Integer.MIN_VALUE)
-            return level;
+        if(lower_room == null)
+            return this_room;
         else
-            return lower;
+            return lower_room;
     }
 
-    public int getHigherLevel(int level){
+    public Room getHigherRoom(Room this_room){
         int higher=Integer.MAX_VALUE;
+        Room higher_room = null;
         for (Room room : owners) {
-            if(room.getLevel()<higher && room.getLevel() > level){
+            if(room.getLevel()<higher && room.getLevel() > this_room.getLevel()){
                 higher = room.getLevel();
+                higher_room = room;
             }
         }
-        if(higher == Integer.MAX_VALUE)
-            return level;
+        if(higher_room == null)
+            return this_room;
         else
-            return higher;
+            return higher_room;
     }
 
 
