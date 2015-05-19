@@ -1,6 +1,7 @@
 package MapGenerator.RoomFieldStructure;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 
 public class Map {
@@ -56,6 +57,10 @@ public class Map {
         return rooms_list.size();
     }
 
+    public Set<Room> getRoomsNeighbours(int roomID){
+        return rooms_list.get(roomID).getNeighbours();
+    }
+
     // ****************PUBLIC METHODS *********************
     public boolean addRoom(int x,int y,int width, int height){
         boolean res = rooms_list.add(new Room(this,rooms_list.size(),x,y,current_level,width,height));
@@ -97,6 +102,10 @@ public class Map {
     public void swapRooms(int Room1, int room2){
         // TODO throw exception if rooms IDs are wrong
         rooms_list.get(Room1).swapWith(rooms_list.get(room2));
+    }
+
+    public boolean addDoor(int Room1, int Room2){
+        return rooms_list.get(Room1).addDoorWith(rooms_list.get(Room2));
     }
 
     // ***************PRIVATE METHODS ********************

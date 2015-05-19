@@ -1,6 +1,9 @@
 package MapGenerator.RoomFieldStructure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Set;
 
 
 public class Room {
@@ -8,10 +11,9 @@ public class Room {
     private int roomID;
     private int x,y,level;
     private int width,height;
-    //private ArrayList<Field> boundaries;
+    private HashMap<Room,ArrayList<Field>> boundaries;
     private ArrayList<ArrayList<Field>> fields_grid;
-    private ArrayList<Room> neighbours;
-
+    private Random rand;
 
 
     public Room(Map m,int roomID,int x, int y, int level, int width, int height) {
@@ -23,6 +25,8 @@ public class Room {
         this.level = level;
         this.height = height;
         this.width = width;
+        boundaries = new HashMap<>();
+        rand=new Random();
        refresh();
 
     }
@@ -74,17 +78,7 @@ public class Room {
             }
     }
 
-    public ArrayList<Room> getNeighbours(){
-        return neighbours;
-    }
     // ****************PUBLIC METHODS *********************
-    private boolean addNeighbour(Room r){
-       return neighbours.add(r);
-    }
-    private boolean removeNeighbour(Room r){
-        return neighbours.remove(r);
-    }
-
 
     private void refresh(){
         fields_grid = new ArrayList<>();
@@ -193,7 +187,49 @@ public class Room {
         refresh();
     }
 
+    public void calcBoundries() {
+        for (int row = 0; row < height; ++row) {
+            for (int col = 0; col < width; ++col) {
+                Field field = fields_grid.get(row).get(col);
+                if( field !=null){
+                    field.calcState();
+                    if(field.getState() == Field.State.WALL && field.getNeighboursCount() == 2){
+                        // field is at the edge of two rooms and is straight wall with just two neighbouring rooms
+                        Room neighbour = field.getUnique_neighbours().stream().filter(c->c!=this).findFirst().get();
+                        if(boundaries.containsKey(neighbour)){
+                            boundaries.get(neighbour).add(field);
+                        }else{
+                            boundaries.put(neighbour,new ArrayList<>());
+                            boundaries.get(neighbour).add(field);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    public Set<Room> getNeighbours(){
+        return boundaries.keySet();
+    }
+
+    public ArrayList<Field> getNeighboursFields(Room r){
+        if(boundaries.containsKey(r))
+            return boundaries.get(r);
+        else
+            return null;
+    }
 
 
-
+    public boolean addDoorWith(Room other) {
+        if(boundaries.containsKey(other)){
+            ArrayList<Field> walls = boundaries.get(other);
+            if(walls.stream().filter(c->c.getState() == Field.State.DOOR).count() != 0)
+                return false;
+            int pos=rand.nextInt(walls.size());
+            walls.get(pos).setState(Field.State.DOOR);
+            return true;
+        }else
+            return false;
+    }
 }
