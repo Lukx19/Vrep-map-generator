@@ -16,18 +16,18 @@ public class Room {
     private Random rand;
 
 
-    public Room(Map m,int roomID,int x, int y, int level, int width, int height) {
+    public Room(Map m,Random rand,int roomID,int x, int y, int level, int width, int height) {
 
         this.map = m;
+        this.rand = rand;
         this.roomID=roomID;
         this.x = x;
         this.y = y;
         this.level = level;
         this.height = height;
         this.width = width;
-        boundaries = new HashMap<>();
-        rand=new Random();
-       refresh();
+        boundaries = new HashMap<>(20);
+        refresh();
 
     }
 
@@ -69,7 +69,7 @@ public class Room {
     public void setLevel(int level) {
         this.level = level;
         for(int row=0;row<height;++row)
-            for (int col = y; col < width; ++col) {
+            for (int col = 0; col < width; ++col) {
                 if(fields_grid.get(row).get(col) != null){
                     fields_grid.get(row).get(col).removeOwner(this);
                     fields_grid.get(row).get(col).addOwner(this);
@@ -78,7 +78,9 @@ public class Room {
             }
     }
 
-    // ****************PUBLIC METHODS *********************
+    public int getRoomID(){
+        return roomID;
+    }
 
     private void refresh(){
         fields_grid = new ArrayList<>();
@@ -159,6 +161,8 @@ public class Room {
     }
 
     public void moveRight(){
+        if(x+1 >map.getWidth()-width-2)
+            return;
         for(int row=0;row<height;++row){
             if(fields_grid.get(row).get(0) != null) fields_grid.get(row).get(0).removeOwner(this);
         }
@@ -166,6 +170,8 @@ public class Room {
         refresh();
     }
     public void moveLeft(){
+        if(x-1 <2)
+            return;
         for(int row=0;row<height;++row){
             if(fields_grid.get(row).get(width-1) != null) fields_grid.get(row).get(width-1).removeOwner(this);
         }
@@ -173,6 +179,8 @@ public class Room {
         refresh();
     }
     public void moveUp(){
+        if(y-1 <2)
+            return;
         for(int col=0;col<width;++col){
             if(fields_grid.get(height-1).get(col) != null) fields_grid.get(height-1).get(col).removeOwner(this);
         }
@@ -180,33 +188,26 @@ public class Room {
         refresh();
     }
     public void moveDown(){
+        if(y+1 > map.getHeight()-height-2)
+            return;
         for(int col=0;col<width;++col){
             if(fields_grid.get(0).get(col) != null) fields_grid.get(0).get(col).removeOwner(this);
         }
         y++;
         refresh();
     }
-
-    public void calcBoundries() {
-        for (int row = 0; row < height; ++row) {
-            for (int col = 0; col < width; ++col) {
-                Field field = fields_grid.get(row).get(col);
-                if( field !=null){
-                    field.calcState();
-                    if(field.getState() == Field.State.WALL && field.getNeighboursCount() == 2){
-                        // field is at the edge of two rooms and is straight wall with just two neighbouring rooms
-                        Room neighbour = field.getUnique_neighbours().stream().filter(c->c!=this).findFirst().get();
-                        if(boundaries.containsKey(neighbour)){
-                            boundaries.get(neighbour).add(field);
-                        }else{
-                            boundaries.put(neighbour,new ArrayList<>());
-                            boundaries.get(neighbour).add(field);
-                        }
-                    }
-                }
-            }
-
+    public void addNeighbour(Room key,Field val){
+        if (key == null)return;
+        if(boundaries.containsKey(key)){
+            boundaries.get(key).add(val);
+        }else{
+            boundaries.put(key,new ArrayList<>());
+            boundaries.get(key).add(val);
         }
+    }
+
+    public void clearNeighbours(){
+        boundaries.clear();
     }
 
     public Set<Room> getNeighbours(){
@@ -222,14 +223,31 @@ public class Room {
 
 
     public boolean addDoorWith(Room other) {
-        if(boundaries.containsKey(other)){
-            ArrayList<Field> walls = boundaries.get(other);
-            if(walls.stream().filter(c->c.getState() == Field.State.DOOR).count() != 0)
-                return false;
-            int pos=rand.nextInt(walls.size());
-            walls.get(pos).setState(Field.State.DOOR);
-            return true;
-        }else
+        ArrayList<Field> all_walls = new ArrayList<>();
+        if(boundaries.containsKey(other)) {
+           all_walls.addAll(boundaries.get(other));
+        }
+        if(other.getNeighboursFields(this) != null){
+            all_walls.addAll(other.getNeighboursFields(this));
+        }
+        if(all_walls.size()==0) return false;
+        if(all_walls.stream().filter(c->c.getState() == Field.State.DOOR).count() != 0)
             return false;
+        int pos=rand.nextInt(all_walls.size());
+        all_walls.get(pos).setState(Field.State.DOOR);
+        return true;
+    }
+     @Override
+    public String toString() {
+        StringBuilder outp = new StringBuilder();
+        outp.append(roomID);
+        outp.append(" room's neighbours: ");
+        getNeighbours().stream().forEach(c->outp.append(String.valueOf(c.getRoomID())+","));
+        outp.append("\n");
+        boundaries.forEach((room, fields) -> {outp.append(room.getRoomID()+"-fields: ");
+                                                fields.forEach(field ->outp.append(field.printCoords()));
+                                                });
+        outp.append("\n");
+        return outp.toString();
     }
 }

@@ -6,32 +6,44 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class MapGui extends Map {
     private JPanel map_frame;
     private JPanel rooms_frame;
+    private JPanel doors_frame;
     private JPanel frame;
     private ArrayList<JButton> rooms;
     private JButton activated;
+    private Color old_color;
     private int top,left;
     private int width,height;
-    private int STEP = 3;
+    private int STEP = 10;
 
-    public MapGui(JPanel frame,int  width, int height) {
-        super(width, height);
+    public MapGui(JPanel frame,Random rand,int  width, int height, int map_width, int map_height) {
+        super(rand,map_width, map_height);
+        STEP = width /map_width;
         this.frame = frame;
+        JPanel center_frame = new JPanel(new GridLayout(1,2));
+        center_frame.setSize(width,height);
+
         map_frame = new JPanel(null);
         map_frame.setSize(width,height);
 
-        rooms_frame = new JPanel(new GridLayout(2,width));
+        rooms_frame = new JPanel(new GridLayout(4,width));
+        doors_frame = new JPanel();
+
         frame.setLayout(new BorderLayout(0,0));
-        frame.add(map_frame,BorderLayout.CENTER);
+        center_frame.add(map_frame);
+        center_frame.add(doors_frame);
+        frame.add(center_frame,BorderLayout.CENTER);
         frame.add(rooms_frame,BorderLayout.NORTH);
-        top=frame.getInsets().top;
-        left=frame.getInsets().left;
+        top=center_frame.getInsets().top;
+        left=center_frame.getInsets().left;
         rooms=new ArrayList<>();
         activated = null;
         this.width=width;
@@ -40,83 +52,62 @@ public class MapGui extends Map {
 
     @Override
     public boolean addRoom(int x, int y, int width, int height) {
+
+        return addRoom(x, y, width, height,Color.RED);
+    }
+
+    public boolean addRoom(int x, int y, int width, int height, Color c) {
+        old_color = c;
         JButton current = new JButton(String.valueOf(rooms.size()));
         current.setName(String.valueOf(rooms.size()));
-        current.setBackground(Color.RED);
+        current.setBackground(c);
         current.setBorder(new LineBorder(Color.BLACK,2));
         current.setBounds(x*STEP+left,y*STEP+top,width*STEP,height*STEP);
         current.setVisible(true);
         current.setRolloverEnabled(false);
-        current.addMouseListener(new MouseInputListener() {
+        current.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-               if (activated != null)
-                    activated.setBackground(Color.RED);
+                super.mouseClicked(e);
+                if (activated != null)
+                    activated.setBackground(old_color);
                 activated =(JButton) e.getComponent();
+                old_color=activated.getBackground();
                 activated.setBackground(Color.BLUE);
                 map_frame.updateUI();
             }
 
             @Override
-            public void mousePressed(MouseEvent e) { }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {  }
-
-            @Override
             public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
                 JButton in = (JButton) e.getComponent();
                 in.setBorder(new EtchedBorder(1, Color.BLUE, Color.cyan));
                 map_frame.updateUI();
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
                 JButton in = (JButton) e.getComponent();
                 in.setBorder(new LineBorder(Color.BLACK, 2));
                 map_frame.updateUI();
-
             }
-
-            @Override
-            public void mouseDragged(MouseEvent e) { }
-
-            @Override
-            public void mouseMoved(MouseEvent e) { }
         });
-
         JButton list_button = new JButton(String.valueOf(rooms.size()));
         list_button.setName(String.valueOf(rooms.size()));
         list_button.setRolloverEnabled(true);
-        list_button.addMouseListener(new MouseInputListener() {
+        list_button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
                 int pressed = Integer.parseInt(e.getComponent().getName());
                 if (activated != null)
-                    activated.setBackground(Color.RED);
+                    activated.setBackground(old_color);
                 activated = rooms.get(pressed);
+                old_color = activated.getBackground();
                 activated.setBackground(Color.BLUE);
                 map_frame.updateUI();
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) { }
-
-            @Override
-            public void mouseReleased(MouseEvent e) { }
-
-            @Override
-            public void mouseEntered(MouseEvent e) { }
-
-            @Override
-            public void mouseExited(MouseEvent e) { }
-
-            @Override
-            public void mouseDragged(MouseEvent e) { }
-
-            @Override
-            public void mouseMoved(MouseEvent e) { }
         });
 
         rooms.add(current);
@@ -126,6 +117,17 @@ public class MapGui extends Map {
         refresh();
         return true;
 
+    }
+
+    public void showWallMap(){
+        doors_frame.removeAll();
+        JTextArea txt = new JTextArea();
+        txt.setText(toString());
+        txt.setFont(new Font("monospaced", Font.PLAIN, 12));
+        txt.setLineWrap(false);
+        txt.setVisible(true);
+        doors_frame.add(txt);
+        doors_frame.updateUI();
     }
 
     public void moveRight() {
@@ -183,6 +185,7 @@ public class MapGui extends Map {
         refresh();
     }
 
+    // /********************* PRIVATE METHODS *****************************
     private void refresh(){
         for(JButton button:rooms){
             Room r =getRoom(Integer.parseInt(button.getName()));
@@ -191,5 +194,6 @@ public class MapGui extends Map {
         }
         map_frame.updateUI();
     }
+
 
 }

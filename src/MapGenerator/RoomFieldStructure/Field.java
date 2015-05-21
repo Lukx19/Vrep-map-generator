@@ -125,14 +125,6 @@ public class Field {
 
 
     private void prepareData(){
-//        if(map.getField(posX-1,posY-1) != null) neighbours[0]=map.getField(posX-1,posY-1).getTopOwner();
-//        else neighbours[0]=null;
-//        if(map.getField(posX+1,posY-1) != null)neighbours[1]=map.getField(posX+1,posY-1).getTopOwner();
-//        else neighbours[1]=null;
-//        if(map.getField(posX+1,posY+1) != null)neighbours[2]=map.getField(posX+1,posY+1).getTopOwner();
-//        else neighbours[2]=null;
-//        if(map.getField(posX-1,posY+1) != null)neighbours[3]=map.getField(posX-1,posY+1).getTopOwner();
-//        else neighbours[3]=null;
         unique_neighbours.clear();
         if(map.getField(posX,posY-1) != null){
             neighbours[0]=map.getField(posX,posY-1).getNeighbour(3);
