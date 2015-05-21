@@ -1,7 +1,7 @@
-package MapGenerator.RoomFieldStructure.Vrep;
+package MapGenerator.Vrep;
 
 
-import MapGenerator.RoomFieldStructure.Map;
+import MapGenerator.MainStructure.Map;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
