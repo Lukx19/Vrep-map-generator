@@ -75,11 +75,7 @@ public class Field {
         return unique_neighbours.size();
     }
 
-   // public Room[] getNeighboursGrid(){
-  //      return neighbours;
-  //  }
-
-    public ArrayList<Room> getUnique_neighbours(){
+   public ArrayList<Room> getUnique_neighbours(){
         return unique_neighbours;
     }
 

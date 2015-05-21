@@ -2,17 +2,21 @@ package MapGenerator.RoomFieldStructure;
 
 import MapGenerator.RoomFieldStructure.Generators.DoorGenerator;
 import MapGenerator.RoomFieldStructure.Generators.RoomsGenerator;
+import MapGenerator.RoomFieldStructure.Vrep.VrepSocket;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.Random;
 
 public class GUI extends JFrame{
     JPanel map_frame;
     JPanel main_frame;
     JPanel bottom_frame;
+    boolean map_is_ready=false;
     MapGui map;
+    VrepSocket vrep;
     Random rand;
     public GUI(String title) throws HeadlessException {
         super(title);
@@ -25,15 +29,7 @@ public class GUI extends JFrame{
 
         bottom_frame = new JPanel(new FlowLayout());
 
-
         map_frame = new JPanel(null,true);
-//        map_frame.setSize(300,300);
-//        map = new MapGui(map_frame,100,100);
-//        map.addRoom(10,10,20,20);
-//        map.addRoom(30,30,40,40);
-//        map.addRoom(0,0,40,40);
-
-
         main_frame.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "right");
         main_frame.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "left");
         main_frame.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), "up");
@@ -96,12 +92,24 @@ public class GUI extends JFrame{
                     map.prepareData();
                     addDoors();
                     printMap();
+                    map_is_ready=true;
+                }
+            }
+        });
+        JButton send_vrep = new JButton("SEND TO VREP");
+        send_vrep.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mouseClicked(e);
+                if (map_is_ready) {
+                    sendToVrep();
                 }
             }
         });
 
         bottom_frame.add(generate_map);
         bottom_frame.add(add_walls);
+        bottom_frame.add(send_vrep);
         main_frame.add(BorderLayout.CENTER, map_frame);
         main_frame.add(BorderLayout.SOUTH,bottom_frame);
 
@@ -137,6 +145,41 @@ public class GUI extends JFrame{
             map.prepareData();
             DoorGenerator door_gen=new DoorGenerator(rand,map);
             door_gen.calcDoors();
+        }
+
+    }
+    private void sendToVrep(){
+        if(map != null){
+            vrep= new VrepSocket(map,9999);
+
+            try {
+                vrep.connect();
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Connection to Vrep not successful",
+                        "Connection error",
+                        JOptionPane.ERROR_MESSAGE);
+
+            }
+            try {
+                vrep.sendMap();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Data not send to Vrep",
+                        "Connection error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            try {
+                vrep.close();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Connection with Vrep not closed",
+                        "Connection error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
         }
 
     }

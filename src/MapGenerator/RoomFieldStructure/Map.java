@@ -135,6 +135,27 @@ public class Map {
 
         }
     }
+    public String printMapaData(){
+        StringBuilder block= new StringBuilder();
+        for(int row=0;row<getHeight();++row){
+            for(int col=0;col<getWidth();++col){
+                switch(getField(row,col).getState()){
+
+                    case WALL:block.append(getField(row, col).getWallType().ordinal() + ":");
+                        break;
+                    case EMPTY:
+                    case IN_ROOM:block.append("-2:");
+                        break;
+                    case DOOR:block.append("-1:");
+                        break;
+                }
+            }
+            block.deleteCharAt(block.length()-1);
+            block.append("\n");
+
+        }
+        return block.toString();
+    }
     @Override
     public String toString() {
         if(field_grid.size() != 0){
