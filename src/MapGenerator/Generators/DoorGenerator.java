@@ -1,19 +1,19 @@
-package MapGenerator.RoomFieldStructure.Generators;
+package MapGenerator.Generators;
 
-import MapGenerator.RoomFieldStructure.*;
-import MapGenerator.RoomFieldStructure.Graph.Edge;
-import MapGenerator.RoomFieldStructure.Graph.Node;
-import MapGenerator.RoomFieldStructure.KruskalsAlg.KruskalsGraph;
+import MapGenerator.Graph.Edge;
+import MapGenerator.Graph.Node;
+import MapGenerator.MainStructure.Map;
+import MapGenerator.MainStructure.Room;
+import MapGenerator.KruskalsAlg.KruskalsGraph;
 
 import java.util.*;
-import java.util.Map;
 
 public class DoorGenerator {
-    MapGenerator.RoomFieldStructure.Map map;
+    MapGenerator.MainStructure.Map map;
     KruskalsGraph<Room> rooms_grah;
     Random rand;
 
-    public DoorGenerator(Random rand, MapGenerator.RoomFieldStructure.Map map) {
+    public DoorGenerator(Random rand, Map map) {
         this.map = map;
         this.rand = rand;
         rooms_grah = new KruskalsGraph<>();

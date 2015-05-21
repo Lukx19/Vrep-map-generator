@@ -1,4 +1,4 @@
-package MapGenerator.RoomFieldStructure.Generators;
+package MapGenerator.Generators;
 
 public class RoomType {
 

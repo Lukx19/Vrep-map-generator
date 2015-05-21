@@ -1,6 +1,4 @@
-package MapGenerator.RoomFieldStructure.KruskalsAlg;
-
-import MapGenerator.RoomFieldStructure.Graph.Node;
+package MapGenerator.KruskalsAlg;
 
 import java.util.ArrayList;
 

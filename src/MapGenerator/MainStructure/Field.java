@@ -1,4 +1,4 @@
-package MapGenerator.RoomFieldStructure;
+package MapGenerator.MainStructure;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;

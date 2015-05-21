@@ -1,4 +1,4 @@
-package MapGenerator.RoomFieldStructure.Graph;
+package MapGenerator.Graph;
 
 import com.sun.istack.internal.NotNull;
 

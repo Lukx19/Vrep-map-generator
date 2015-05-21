@@ -1,10 +1,9 @@
-package MapGenerator.RoomFieldStructure;
+package MapGenerator.MainStructure;
 
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

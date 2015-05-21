@@ -1,7 +1,7 @@
-package MapGenerator.RoomFieldStructure.Generators;
+package MapGenerator.Generators;
 
 
-import MapGenerator.RoomFieldStructure.Map;
+import MapGenerator.MainStructure.Map;
 
 import java.util.ArrayList;
 import java.util.Random;

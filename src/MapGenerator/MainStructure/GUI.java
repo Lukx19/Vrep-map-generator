@@ -1,14 +1,12 @@
-package MapGenerator.RoomFieldStructure;
+package MapGenerator.MainStructure;
 
-import MapGenerator.RoomFieldStructure.Generators.DoorGenerator;
-import MapGenerator.RoomFieldStructure.Generators.RoomsGenerator;
-import MapGenerator.RoomFieldStructure.Vrep.VrepSocket;
+import MapGenerator.Generators.RoomsGenerator;
+import MapGenerator.Generators.DoorGenerator;
+import MapGenerator.Vrep.VrepSocket;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.TextAction;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;

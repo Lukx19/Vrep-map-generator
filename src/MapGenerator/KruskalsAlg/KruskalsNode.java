@@ -1,6 +1,6 @@
-package MapGenerator.RoomFieldStructure.KruskalsAlg;
+package MapGenerator.KruskalsAlg;
 
-import MapGenerator.RoomFieldStructure.Graph.Node;
+import MapGenerator.Graph.Node;
 
 public class KruskalsNode<T> extends Node<T> {
 

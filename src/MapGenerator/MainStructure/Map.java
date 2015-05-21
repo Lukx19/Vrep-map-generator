@@ -1,4 +1,4 @@
-package MapGenerator.RoomFieldStructure;
+package MapGenerator.MainStructure;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -139,7 +139,7 @@ public class Map {
         StringBuilder block= new StringBuilder();
         for(int row=0;row<getHeight();++row){
             for(int col=0;col<getWidth();++col){
-                switch(getField(row,col).getState()){
+                switch(getField(row, col).getState()){
 
                     case WALL:block.append(getField(row, col).getWallType().ordinal() + ":");
                         break;
