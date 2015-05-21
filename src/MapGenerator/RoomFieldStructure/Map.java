@@ -1,6 +1,7 @@
 package MapGenerator.RoomFieldStructure;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -10,16 +11,19 @@ public class Map {
     private int current_level = 0;
     private int width;
     private int height;
+    private Random rand;
 
     // ***********************CONSTRUCTORS ****************
 
     public Map() {
+        rand = new Random();
         height = 300;
         width = 300;
         init(width,height);
     }
 
-    public Map(int width, int height) {
+    public Map(Random rand ,int width, int height) {
+        this.rand=rand;
         this.height=height;
         this.width = width;
         init(width,height);
@@ -58,12 +62,13 @@ public class Map {
     }
 
     public Set<Room> getRoomsNeighbours(int roomID){
+        Set<Room> s = rooms_list.get(roomID).getNeighbours();
         return rooms_list.get(roomID).getNeighbours();
     }
 
     // ****************PUBLIC METHODS *********************
     public boolean addRoom(int x,int y,int width, int height){
-        boolean res = rooms_list.add(new Room(this,rooms_list.size(),x,y,current_level,width,height));
+        boolean res = rooms_list.add(new Room(this,rand,rooms_list.size(),x,y,current_level,width,height));
         if(res) current_level++;
         return res;
     }
@@ -99,13 +104,51 @@ public class Map {
         rooms_list.get(roomID).moveDown();
     }
 
-    public void swapRooms(int Room1, int room2){
+   public void swapRooms(int Room1, int room2){
         // TODO throw exception if rooms IDs are wrong
         rooms_list.get(Room1).swapWith(rooms_list.get(room2));
     }
 
     public boolean addDoor(int Room1, int Room2){
         return rooms_list.get(Room1).addDoorWith(rooms_list.get(Room2));
+    }
+
+    void prepareData(){
+        rooms_list.stream().forEach(c->c.clearNeighbours());
+
+        for (int row = 0; row < height; ++row) {
+            for (int col = 0; col < width; ++col) {
+                Field field = field_grid.get(row).get(col);
+                if( field !=null){
+                    field.calcState();
+                    if(field.getState() == Field.State.WALL && /*field.getTopOwner() != rooms_list.get(0) &&*/
+                            (field.getWallType() == Field.Wall.HORIZONTAL_LINE ||
+                                    field.getWallType() == Field.Wall.VERTICAL_LINE )){
+                        // field is at the edge of two rooms and is straight wall with just two neighbouring rooms
+                        Room owner = field.getTopOwner();
+                        field.getUnique_neighbours().stream().filter(c->c!=owner).
+                                forEach(d->owner.addNeighbour(d,field));
+
+                    }
+                }
+            }
+
+        }
+    }
+    @Override
+    public String toString() {
+        if(field_grid.size() != 0){
+            StringBuilder outp = new StringBuilder();
+            for(int row=0;row<height;++row){
+                for(int col=0; col<width;++col){
+                    outp.append(field_grid.get(row).get(col).toString());
+                }
+                outp.append("\n");
+            }
+            return outp.toString();
+        }
+        return "";
+
     }
 
     // ***************PRIVATE METHODS ********************
@@ -119,6 +162,10 @@ public class Map {
             }
         }
 
+    }
+
+    public void clearWallData(){
+        rooms_list.stream().forEach(c->c.clearNeighbours());
     }
 
 
