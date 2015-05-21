@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class VrepSocket {
-    private static int PORT;
+    private static int PORT=9999;
     private DataOutputStream out_to_server;
     private boolean is_connected = false;
     private String data;
@@ -38,8 +38,11 @@ public class VrepSocket {
     }
 
     public void close() throws IOException {
-        output_socket.close();
-        is_connected=false;
+        if(is_connected){
+            output_socket.close();
+            is_connected=false;
+        }
+
     }
 
     public void send() throws IOException {
@@ -53,4 +56,9 @@ public class VrepSocket {
         addData(map.printMapaData());
         send();
     }
+
+    public static void setPORT(int PORT) {
+        VrepSocket.PORT = PORT;
+    }
+
 }
