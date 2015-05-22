@@ -1,7 +1,5 @@
 package MapGenerator.Graph;
 
-import com.sun.istack.internal.NotNull;
-
 /**
  * Basic implementation of undirected edge.
  * @author Lukas Jelinek
@@ -71,7 +69,6 @@ public class Edge<T> implements Comparable<Edge<T>> {
      * @return -1 this is less than other; 0 this equals to other; 1 this is greater than other
      */
     @Override
-    @NotNull
     public int compareTo(Edge<T> other) {
         if(this.getWeight()<other.getWeight())
             return -1;
