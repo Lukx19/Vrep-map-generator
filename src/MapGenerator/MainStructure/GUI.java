@@ -12,11 +12,14 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Random;
 
+/**
+ *  Creates GUI for visualisation of the map and program control
+ */
 public class GUI extends JFrame{
-    JPanel map_frame;
-    JPanel main_frame;
-    JPanel bottom_frame;
-    JPanel left_frame;
+    private JPanel map_frame;
+    private JPanel main_frame;
+    private JPanel bottom_frame;
+    private JPanel left_frame;
     boolean map_is_ready=false;
     int ROOM_COUNT =5;
     int VREP_PORT = 9999;
@@ -24,6 +27,12 @@ public class GUI extends JFrame{
     VrepSocket vrep;
     RoomsGenerator room_gen;
     Random rand;
+
+    /**
+     * Creates GUI of application
+     * @param title Title of the window
+     * @throws HeadlessException
+     */
     public GUI(String title) throws HeadlessException {
         super(title);
         rand = new Random();

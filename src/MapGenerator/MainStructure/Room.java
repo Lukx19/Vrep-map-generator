@@ -6,6 +6,11 @@ import java.util.Random;
 import java.util.Set;
 
 
+/**
+ * Room consists of multiple fields. Each room object has it level.
+ * Room is able to move in map's grid and change its level in room's hierarchy
+ * @author Lukas Jelinek
+ */
 public class Room {
     private Map map;
     private int roomID;
@@ -16,6 +21,16 @@ public class Room {
     private Random rand;
 
 
+    /**
+     * @param m reference to map
+     * @param rand random generator object
+     * @param roomID ID of this room
+     * @param x left top corner of room fields
+     * @param y left top corner of rooms field
+     * @param level initial level in room's hierarchy
+     * @param width width of the room
+     * @param height height of the room
+     */
     public Room(Map m,Random rand,int roomID,int x, int y, int level, int width, int height) {
 
         this.map = m;
@@ -32,40 +47,72 @@ public class Room {
     }
 
 
-    // ******************** GETTERS & SETTERS *************
-   public void setHeight(int height) {
+    /**
+     * @param height new height of the room
+     */
+    public void setHeight(int height) {
         this.height = height;
     }
+
+    /**
+     * @return height of the room
+     */
     public int getHeight(){
         return height;
     }
+
+    /**
+     * @return width of the room
+     */
     public int getWidth(){
         return width;
     }
+
+    /**
+     * @param width new width of the room
+     */
     public void setWidth(int width) {
         this.width = width;
     }
 
+    /**
+     * @return X coordinate of room's reference frame in map frame
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * @param x sets X coordinate of room's reference frame in map frame
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+    /**
+     * @return Y coordinate of room's reference frame in map frame
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     * @param y sets Y coordinate of room's reference frame in map frame
+     */
     public void setY(int y) {
         this.y = y;
     }
 
+    /**
+     * @return current level ot he room
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     * @param level sets new level of this room
+     */
     public void setLevel(int level) {
         this.level = level;
         for(int row=0;row<height;++row)
@@ -78,10 +125,16 @@ public class Room {
             }
     }
 
+    /**
+     * @return ID of the room
+     */
     public int getRoomID(){
         return roomID;
     }
 
+    /**
+     *  reallocate rooms local field grid
+     */
     private void refresh(){
         fields_grid = new ArrayList<>();
         for(int row=0;row<height;++row){
@@ -98,11 +151,19 @@ public class Room {
         }
 
     }
+
+    /**
+     * @param other exchange this room whit other room. Their levels exchange
+     */
     public void swapWith(Room other){
         int other_level= other.getLevel();
         other.setLevel(level);
         setLevel(other_level);
     }
+
+    /**
+     *  Rise room lowest possible amount of levels. Based on rooms which are above this room.
+     */
     public void rise() {
         int higher_level=level;
         Room higher_room=null;
@@ -132,6 +193,9 @@ public class Room {
 
     }
 
+    /**
+     *  Lower room lowest possible amount of levels. Based on rooms which are bellow this room.
+     */
     public void lower() {
         int lower_level=level;
         Room lower_room = null;
@@ -160,6 +224,9 @@ public class Room {
             swapWith(lower_room);
     }
 
+    /**
+     *  Moves this room right in map's grid
+     */
     public void moveRight(){
         if(x+1 >map.getWidth()-width-2)
             return;
@@ -169,6 +236,9 @@ public class Room {
         x++;
         refresh();
     }
+    /**
+     *  Moves this room left in map's grid
+     */
     public void moveLeft(){
         if(x-1 <2)
             return;
@@ -178,6 +248,9 @@ public class Room {
         x--;
         refresh();
     }
+    /**
+     *  Moves this room up in map's grid
+     */
     public void moveUp(){
         if(y-1 <2)
             return;
@@ -187,6 +260,9 @@ public class Room {
         y--;
         refresh();
     }
+    /**
+     *  Moves this room down in map's grid
+     */
     public void moveDown(){
         if(y+1 > map.getHeight()-height-2)
             return;
@@ -196,6 +272,12 @@ public class Room {
         y++;
         refresh();
     }
+
+    /**
+     * Adds new neighbour of this room.
+     * @param key reference to neighbouring room
+     * @param val field which is at the border of this and key room
+     */
     public void addNeighbour(Room key,Field val){
         if (key == null)return;
         if(boundaries.containsKey(key)){
@@ -206,14 +288,25 @@ public class Room {
         }
     }
 
+    /**
+     * Removes all neighbours and their fields.
+     */
     public void clearNeighbours(){
         boundaries.clear();
     }
 
+    /**
+     * @return All neighbouring room references.
+     */
     public Set<Room> getNeighbours(){
         return boundaries.keySet();
     }
 
+    /**
+     * All fields on the border between this room and r room.
+     * @param r room bordering with this room
+     * @return all fields at the border of this room and r room
+     */
     public ArrayList<Field> getNeighboursFields(Room r){
         if(boundaries.containsKey(r))
             return boundaries.get(r);
@@ -222,6 +315,11 @@ public class Room {
     }
 
 
+    /**
+     * Add door to one the one of the border fields between this room and othe room
+     * @param other neighbour of this rom
+     * @return true if success
+     */
     public boolean addDoorWith(Room other) {
         ArrayList<Field> all_walls = new ArrayList<>();
         if(boundaries.containsKey(other)) {
@@ -237,6 +335,10 @@ public class Room {
         all_walls.get(pos).setState(Field.State.DOOR);
         return true;
     }
+
+    /**
+     * @return String with information about all neighbours of this room and their border fields
+     */
      @Override
     public String toString() {
         StringBuilder outp = new StringBuilder();

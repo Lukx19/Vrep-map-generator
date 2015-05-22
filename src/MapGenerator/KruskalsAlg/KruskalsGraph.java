@@ -9,10 +9,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * Creates specific graph for Kruskal's algorithm. Calculate minimal spanning tree
+ * @author Lukas Jelinek
+ * @param <T> data type of node
+ */
 public class KruskalsGraph<T> extends Graph<T>{
     private LinkedList<DisJointSet<T>> sets;
     int setsCounter;
 
+    /**
+     *  Creates empty  graph
+     */
     public KruskalsGraph() {
         super();
         sets = new LinkedList<>();
@@ -20,6 +28,9 @@ public class KruskalsGraph<T> extends Graph<T>{
 
     }
 
+    /**
+     * @param data data to be stored in the graph node
+     */
     @Override
     public void addNode(T data) {
         // check if this node is not already pressent in the graph
@@ -32,6 +43,10 @@ public class KruskalsGraph<T> extends Graph<T>{
         }
     }
 
+    /**
+     * Calculate minimal spanning tree
+     * @return edges in minimal spanning tree
+     */
     public List<Edge<T>> calcSpanningTree() {
         ArrayList<Edge<T>> spanningTree = new ArrayList<>();
         Collections.sort(edges);

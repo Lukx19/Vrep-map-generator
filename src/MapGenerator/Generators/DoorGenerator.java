@@ -8,11 +8,20 @@ import MapGenerator.KruskalsAlg.KruskalsGraph;
 
 import java.util.*;
 
+/**
+ *  Generates doors to map.
+ *  @author Lukas Jelinek
+ */
 public class DoorGenerator {
     MapGenerator.MainStructure.Map map;
     KruskalsGraph<Room> rooms_grah;
     Random rand;
 
+    /**
+     * Initialize Graph based on rooms and their neighbours.
+     * @param rand random generator
+     * @param map reference to map
+     */
     public DoorGenerator(Random rand, Map map) {
         this.map = map;
         this.rand = rand;
@@ -43,6 +52,9 @@ public class DoorGenerator {
         rooms_grah.addAllEdges(edges);
     }
 
+    /**
+     *  Generates doors to the map of walls.
+     */
     public void calcDoors(){
         List<Edge<Room>> doors =  rooms_grah.calcSpanningTree();
 

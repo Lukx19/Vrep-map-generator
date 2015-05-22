@@ -1,6 +1,5 @@
 package MapGenerator.MainStructure;
 
-
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -11,6 +10,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
+/**
+ *  Graphical representation of the Map class
+ *  @author Lukas Jelinek
+ */
 public class MapGui extends Map {
     private JPanel map_frame;
     private JPanel rooms_frame;
@@ -23,6 +26,14 @@ public class MapGui extends Map {
     private int width,height;
     private int STEP = 10;
 
+    /**
+     * @param frame main frame where map should be drawed
+     * @param rand random generator
+     * @param width width of the gui map
+     * @param height height of the gui map
+     * @param map_width width of the logical map
+     * @param map_height height of the logical map
+     */
     public MapGui(JPanel frame,Random rand,int  width, int height, int map_width, int map_height) {
         super(rand,map_width, map_height);
         STEP = width /map_width;
@@ -49,12 +60,27 @@ public class MapGui extends Map {
         this.height=height;
     }
 
+    /**
+     * @param x      collomn location- left top corner of new room
+     * @param y      row location- left top corner of new room
+     * @param width  width of the room
+     * @param height height of the room
+     * @return true if sucess
+     */
     @Override
     public boolean addRoom(int x, int y, int width, int height) {
 
         return addRoom(x, y, width, height,Color.RED);
     }
 
+    /**
+     * @param x      collomn location- left top corner of new room
+     * @param y      row location- left top corner of new room
+     * @param width  width of the room
+     * @param height height of the room
+     * @param c Color of the room in gui
+     * @return true if sucess
+     */
     public boolean addRoom(int x, int y, int width, int height, Color c) {
         old_color = c;
         JButton current = new JButton(String.valueOf(rooms.size()));
@@ -118,6 +144,9 @@ public class MapGui extends Map {
 
     }
 
+    /**
+     *  Show ASCII graphical representation of the map
+     */
     public void showWallMap(){
         doors_frame.removeAll();
         JTextArea txt = new JTextArea();
@@ -129,6 +158,9 @@ public class MapGui extends Map {
         doors_frame.updateUI();
     }
 
+    /**
+     *  Moves room one field to the right graphically and logically
+     */
     public void moveRight() {
         if (activated == null)
             return;
@@ -139,6 +171,9 @@ public class MapGui extends Map {
 
     }
 
+    /**
+     *  Moves room one field to the left graphically and logically
+     */
     public void moveLeft() {
         if (activated == null)
             return;
@@ -148,7 +183,9 @@ public class MapGui extends Map {
         activated.setBounds(r.getX()*STEP + left, r.getY()*STEP + top, r.getWidth()*STEP, r.getHeight()*STEP);
 
     }
-
+    /**
+     *  Moves room one field up graphically and logically
+     */
     public void moveUp() {
         if (activated == null)
             return;
@@ -158,7 +195,9 @@ public class MapGui extends Map {
         activated.setBounds(r.getX()*STEP + left, r.getY()*STEP + top, r.getWidth()*STEP, r.getHeight()*STEP);
 
     }
-
+    /**
+     *  Moves room one field down graphically and logically
+     */
     public void moveDown() {
         if (activated == null)
             return;
@@ -168,6 +207,9 @@ public class MapGui extends Map {
         activated.setBounds(r.getX()*STEP + left, r.getY()*STEP + top, r.getWidth()*STEP, r.getHeight()*STEP);
 
     }
+    /**
+     *  Moves room one level up in hierarchy graphically and logically
+     */
     public void riseRoom(){
         if (activated == null)
             return;
@@ -175,7 +217,9 @@ public class MapGui extends Map {
         super.riseRoom(roomID);
         refresh();
     }
-
+    /**
+     *  Moves room one level down in hierarchy graphically and logically
+     */
     public void lowerRoom(){
         if (activated == null)
             return;

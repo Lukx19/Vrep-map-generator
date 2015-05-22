@@ -91,5 +91,9 @@ Vrep receives map data through socket on default port 9999.
   working because of limited API 
   7. Stopping of simulation takes approximately 10 seconds to correctly end all socket communication protocols. 
   
- 
+# Building app
+Java 1.8 is required. Project should be interpreted with Ant.
+
+![](docs/generated1.png?raw=true)
+![](docs/generated2.png?raw=true)
  
