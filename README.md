@@ -92,7 +92,12 @@ Vrep receives map data through socket on default port 9999.
   7. Stopping of simulation takes approximately 10 seconds to correctly end all socket communication protocols. 
   
 # Building app
-Java 1.8 is required. Project should be interpreted with Ant.
+Java 1.8 is required. Project should be builded with Ant.
+For correct build with Ant please change field
+
+    jdk.home.1.8=/usr/lib/jvm/jdk-8-oracle-x64
+
+in build.properties in root folder of project for your local path to Java 1.8 JDK.
 
 ![](docs/generated1.png?raw=true)
 ![](docs/generated2.png?raw=true)
