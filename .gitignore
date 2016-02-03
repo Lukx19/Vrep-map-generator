@@ -13,3 +13,8 @@ hs_err_pid*
 
 # idea IDE related files
 .idea/*
+
+# gradle build directory
+build/
+.gradle/
+

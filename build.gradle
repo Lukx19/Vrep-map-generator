@@ -1,0 +1,7 @@
+apply plugin: 'application'
+
+// this project uses non-standard layout
+sourceSets{main{java{srcDir 'src'}}}
+
+// this project uses weird convetion for package names
+mainClassName = 'MapGenerator.MainStructure.Main'
